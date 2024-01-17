@@ -65,7 +65,7 @@ const Login = () => {
             />
           </div>
 
-          <Link href="/password/forgot" className="float-end mt-2">
+          <Link href="/recoverPassword" className="float-end mt-2">
             Forgot Password?
           </Link>
 
@@ -79,7 +79,7 @@ const Login = () => {
           </button>
 
           <div className="mt-3 mb-4">
-            <Link href="/register" className="float-end">
+            <Link href="/singup" className="float-end">
               {" "}
               New User? Register Here{" "}
             </Link>

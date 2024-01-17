@@ -183,9 +183,9 @@ body {
 }
 
 .form-btn {
-  background-color: #e61e4d;
-  border-color: #e61e4d;
-  color: white;
+  background-color: #e61e4d !important;
+  border-color: #e61e4d !important;
+  color: white !important;
   margin-top: 2.5rem;
   font-weight: bold;
   --bs-btn-active-bg: #b02a37;

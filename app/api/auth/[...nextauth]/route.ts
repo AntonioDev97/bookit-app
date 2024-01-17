@@ -8,6 +8,9 @@ import bcrypt from 'bcryptjs';
 type Credential = {
     email: string,
     password: string
+};
+type Token = {
+    user: IUser
 }
 
 async function auth(request: NextApiRequest, response: NextApiResponse) {
@@ -34,9 +37,15 @@ async function auth(request: NextApiRequest, response: NextApiResponse) {
         ],
         callbacks: {
             jwt: async ({ token, user }) => {
+                const jwtToken = token as Token;
                 user && (token.user = user);
 
-                // TODO - Update session when user is updated
+                // Update session when user is updated
+                if (request.url?.includes('/api/auth/session?update')) {
+                    // Hit the database and return the updated user
+                    const updatedUser = await User.findById(jwtToken?.user?._id);
+                    token.user = updatedUser;
+                }
 
                 return token;
             },
@@ -46,6 +55,9 @@ async function auth(request: NextApiRequest, response: NextApiResponse) {
                 delete session?.user?.password
                 return session;
             }
+        },
+        pages: {
+            signIn: '/login'
         },
         secret: process.env.NEXTAUTH_SECRET
     });

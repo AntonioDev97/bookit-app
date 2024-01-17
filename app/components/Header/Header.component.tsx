@@ -1,14 +1,27 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import bookitLogo from '@/public/images/bookit_logo.png';
 import Image from 'next/image';
-import './_header.style.css';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setIsAuth, setUser } from '@/redux/features/user.slice';
+import './_header.style.css';
 
 const Header = () => {
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector(state => state.user);
+
   const { data } = useSession();
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setUser(data.user));
+      if(data.user) dispatch(setIsAuth(true));
+    }
+  }, [data]);
+
   const logoutHandler = () => {
     signOut();
   };
@@ -29,7 +42,7 @@ const Header = () => {
       </div>
 
       <div className="col-6 col-lg-3 mt-3 mt-md-0 text-end">
-        { data?.user ? (
+        { user ? (
         <div className="ml-4 dropdown d-line">
           <button
             className="btn dropdown-toggle flex items-center"
@@ -40,14 +53,14 @@ const Header = () => {
           >
             <figure className="avatar avatar-nav">
               <Image
-                src={data?.user?.avatar?.url || "/images/default_avatar.jpg"}
+                src={user?.avatar?.url || "/images/default_avatar.jpg"}
                 alt="User Avatar"
                 className="rounded-circle placeholder-glow"
                 height="50"
                 width="50"
               />
             </figure>
-            <span className="placeholder-glow ps-1">{data?.user?.name}</span>
+            <span className="placeholder-glow ps-1">{user?.name}</span>
           </button>
 
           <div
@@ -60,7 +73,7 @@ const Header = () => {
             <Link href="/bookings/me" className="dropdown-item">
               My Bookings
             </Link>
-            <Link href="/me/update" className="dropdown-item">
+            <Link href="/users/me" className="dropdown-item">
               Profile
             </Link>
             <Link href="/" onClick={logoutHandler} className="dropdown-item text-danger">

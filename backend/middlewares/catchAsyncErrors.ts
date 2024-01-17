@@ -22,6 +22,12 @@ export const catchAsyncErrors = (handler: HandlerFunction) => async (request: Ne
             error.statusCode = 400;
         }
 
+        // Handle mongo db duplicate entry
+        if (error?.code === 11000) {
+            error.message = `Duplicate ${Object.keys(error.keyValue)} entered`;
+            error.statusCode = 400;
+        }
+
         return NextResponse.json(
             { error, message: error.message }, 
             { status: error.statusCode || 500 }

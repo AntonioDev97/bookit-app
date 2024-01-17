@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
+import fetch from "node-fetch";
 
-export interface IRLocation extends Document {
+export interface IRLocation {
     type: string,
     coordinates: number[],
     formattedAddress: string,
@@ -169,6 +170,21 @@ const roomSchema: Schema<IRoom> = new Schema({
 },
 {
     timestamps: true
+});
+
+roomSchema.pre("save", async function (next) {
+    const loc: any = await (await fetch(
+        `${process.env.GEOCODE_API_URL}/search?key=${process.env.GEOCODE_API_KEY}&format=json&addressdetails=1&q=${this.address}`
+    )).json();
+    this.location = {
+        type: 'Point',
+        coordinates: [loc[0].lon, loc[0].lat],
+        formattedAddress: loc[0].display_name,
+        city: loc[0].address.city,
+        state: loc[0].address.state,
+        zipCode: loc[0].address.postcode,
+        country: loc[0].country_code
+    };
 });
 
 export default mongoose.models.Room || mongoose.model<IRoom>("Room", roomSchema);
