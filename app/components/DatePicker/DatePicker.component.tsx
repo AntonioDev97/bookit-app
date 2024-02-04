@@ -1,22 +1,37 @@
+"use client";
+
 import React, { useState } from 'react';
 import { IRoom } from '@/backend/models/room.model';
 import RDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { calculateDaysOfStay } from '@/helpers/date.helper';
-import { useNewBookingMutation } from '@/redux/api/booking.api';
+import { useLazyAvailabilityQuery, useNewBookingMutation, useRoomBookedDaysQuery } from '@/redux/api/booking.api';
 
 interface IProps { room: IRoom }
 
 const DatePicker = ({ room }: IProps) => {
   const [dateState, setDateState] = useState({ checkin: new Date(), checkout: new Date() });
   const daysOfStay = calculateDaysOfStay(dateState.checkin, dateState.checkout);
+
+  const [newBooking] = useNewBookingMutation();
+  const [availability, { data }] = useLazyAvailabilityQuery();
+  const { data: { dates } = {} } = useRoomBookedDaysQuery(room._id);
+  
+  const excludedDates = dates?.map((date: string) => new Date(date)) || [];
+  const isAvailable = data?.isAvailable;  
+
   const onChangeDates = (dates: any[]) => {
     const [checkin, checkout] = dates;
     setDateState(prev => ({ ...prev, checkin, checkout }));
-    if (checkin && checkout) console.log(checkin, checkout);
+    if (checkin && checkout) {
+      availability({
+        id: room._id,
+        checkIn: checkin.toISOString(),
+        checkOut: checkout.toISOString()
+      });
+    };
   };
 
-  const [newBooking] = useNewBookingMutation();
   const bookRoom = () => {
     const bookingData = {
       room: room?._id,
@@ -44,10 +59,20 @@ const DatePicker = ({ room }: IProps) => {
         startDate={dateState.checkin}
         endDate={dateState.checkout}
         minDate={new Date()}
+        excludeDates={excludedDates}
         onChange={onChangeDates}
         selectsRange
         inline
       />
+      { isAvailable ? 
+      <div className="alert alert-success my-3">
+        Room is available. Book now.
+      </div>
+      : data ? 
+      <div className="alert alert-danger my-3">
+        Room not available. Try different dates.
+      </div> : ''
+      }
       <button className="btn py-3 form-btn w-100" onClick={bookRoom}>
         Pay
       </button>

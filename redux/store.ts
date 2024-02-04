@@ -7,11 +7,11 @@ export const store = configureStore({
     reducer: {
         user: userReducer,
         [AuthAPI.reducerPath]: AuthAPI.reducer,
-        [BookingAPI.reducerPath]: AuthAPI.reducer
+        [BookingAPI.reducerPath]: BookingAPI.reducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([
         AuthAPI.middleware,
-        BookingAPI.middleware as ThunkMiddleware
+        BookingAPI.middleware
     ])
 });
 

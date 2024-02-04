@@ -10,6 +10,10 @@
     "seeder": "tsc backend/seeder/seeder.ts --outDir .temp && node .temp/seeder/seeder.js && rm -rf .temp"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.7",
+    "@mui/x-data-grid": "^6.19.2",
     "@reduxjs/toolkit": "^2.0.1",
     "@types/leaflet": "^1.9.8",
     "bcryptjs": "^2.4.3",
@@ -19,7 +23,9 @@
     "dotenv": "^16.3.1",
     "font-awesome": "^4.7.0",
     "maplibre-gl": "^3.6.2",
+    "mdbreact": "^5.2.0",
     "moment": "^2.30.1",
+    "moment-range": "^4.0.2",
     "mongoose": "^8.0.1",
     "next": "14.0.3",
     "next-auth": "^4.24.5",
