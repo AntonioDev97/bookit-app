@@ -1,15 +1,24 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IRoom } from '@/backend/models/room.model';
 import RDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { calculateDaysOfStay } from '@/helpers/date.helper';
-import { useLazyAvailabilityQuery, useNewBookingMutation, useRoomBookedDaysQuery } from '@/redux/api/booking.api';
+import {
+  useLazyAvailabilityQuery,
+  useLazyStripeCheckoutQuery,
+  useNewBookingMutation,
+  useRoomBookedDaysQuery
+} from '@/redux/api/booking.api';
+import { useAppSelector } from '@/redux/hooks';
+import toast from 'react-hot-toast';
+import { redirect } from 'next/navigation';
 
 interface IProps { room: IRoom }
 
 const DatePicker = ({ room }: IProps) => {
+  const { isAuth } = useAppSelector(state => state.user);
   const [dateState, setDateState] = useState({ checkin: new Date(), checkout: new Date() });
   const daysOfStay = calculateDaysOfStay(dateState.checkin, dateState.checkout);
 
@@ -32,7 +41,25 @@ const DatePicker = ({ room }: IProps) => {
     };
   };
 
+  const [stripeCheckout, {error, isLoading, data: checkoutData}] = useLazyStripeCheckoutQuery();
+
+  useEffect(() => {
+    if (error && 'data' in error) toast.error(error?.data?.message);
+    if (checkoutData) redirect(checkoutData?.session?.url);
+    
+  }, [error, checkoutData])
+
   const bookRoom = () => {
+    stripeCheckout({
+      id: room?._id,
+      daysOfStay,
+      checkIn: dateState.checkin.toISOString(),
+      checkOut: dateState.checkout.toISOString(),
+      amount: daysOfStay * room?.priceNight
+    })
+  }
+
+  /* const bookRoom = () => {
     const bookingData = {
       room: room?._id,
       checkIn: dateState.checkin,
@@ -44,7 +71,7 @@ const DatePicker = ({ room }: IProps) => {
       },
     };
     newBooking(bookingData);
-  };
+  }; */
 
   return (
     <div className='booking-card shadow p-4'>
@@ -73,9 +100,16 @@ const DatePicker = ({ room }: IProps) => {
         Room not available. Try different dates.
       </div> : ''
       }
-      <button className="btn py-3 form-btn w-100" onClick={bookRoom}>
-        Pay
+      { isAvailable && !isAuth && 
+      <div className="alert alert-danger my-3">
+        Login to book room.
+      </div>
+      }
+      { isAvailable && isAuth && 
+      <button className="btn py-3 form-btn w-100" onClick={bookRoom} disabled={isLoading}>
+        Pay - ${daysOfStay * room?.priceNight}
       </button>
+      }
     </div>
   )
 };

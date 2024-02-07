@@ -60,7 +60,7 @@ const Bookings = ({ data }: Props) => {
                             <i className="fa fa-eye"></i>{" "}
                         </Link>
                         <Link
-                            href={`/bookings/invoice/${booking._id}`}
+                            href={`/bookings/${booking._id}/invoice`}
                             className="btn btn-success ms-2"
                         >
                             {" "}

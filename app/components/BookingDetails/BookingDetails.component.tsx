@@ -18,7 +18,7 @@ const BookingDetails = ({ booking }: Props) => {
                         <h2>Booking # {booking?._id}</h2>
                         <Link
                             className="btn btn-success"
-                            href={`/bookings/invoice/${booking?._id}`}
+                            href={`/bookings/${booking?._id}/invoice`}
                         >
                             <i className="fa fa-print"></i> Invoice
                         </Link>
