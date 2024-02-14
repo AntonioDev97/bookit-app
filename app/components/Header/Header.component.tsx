@@ -8,10 +8,11 @@ import { signOut, useSession } from 'next-auth/react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setIsAuth, setUser } from '@/redux/features/user.slice';
 import './_header.style.css';
+import { IUser } from '@/backend/models/user.model';
 
 const Header = () => {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector(state => state.user);
+  const { user }: { user: IUser } = useAppSelector(state => state.user);
 
   const { data } = useSession();
 
@@ -67,9 +68,11 @@ const Header = () => {
             className="dropdown-menu w-100"
             aria-labelledby="dropdownMenuButton1"
           >
+            { user?.role === 'admin' &&
             <Link href="/admin/dashboard" className="dropdown-item">
               Dashboard
             </Link>
+            }
             <Link href="/bookings/me" className="dropdown-item">
               My Bookings
             </Link>

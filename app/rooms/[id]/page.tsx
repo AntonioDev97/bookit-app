@@ -8,7 +8,9 @@ interface IProps {
 }
 
 async function getRoom(id: string) {
-  return await (await fetch(`${API_URL}/api/rooms/${id}`)).json();
+  return await (await fetch(`${API_URL}/api/rooms/${id}`, {
+    cache: "no-cache",
+  })).json();
 }
 
 export default async function RoomDetailsPage({ params }: IProps) {

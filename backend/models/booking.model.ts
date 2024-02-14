@@ -60,6 +60,9 @@ const bookingSchema: Schema<IBooking> = new mongoose.Schema({
             required: true,
         },
     }
+},
+{
+    timestamps: true
 });
 
 export default mongoose.models.Booking || mongoose.model<IBooking>("Booking", bookingSchema);

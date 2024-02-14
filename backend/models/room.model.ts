@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 import fetch from "node-fetch";
+import { IUser } from "./user.model";
 
 export interface IRLocation {
     type: string,
@@ -17,9 +18,9 @@ export interface IRImages extends Document {
 }
 
 export interface IRReview extends Document {
-    user: Schema.Types.ObjectId,
+    user: IUser,
     rating: number,
-    commnet: string
+    comment: string
 };
 
 export interface IRoom extends Document {

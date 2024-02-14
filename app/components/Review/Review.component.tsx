@@ -1,8 +1,35 @@
-import React from 'react'
+import { useCanUserReviewQuery, usePostReviewMutation } from '@/redux/api/room.api';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast';
+import StarRatings from 'react-star-ratings';
 
-const Review = () => {
+const Review = ({ roomId }: { roomId: string }) => {
+    const [review, setReview] = useState({ rating: 0, comment: '' });
+    const router = useRouter();
+
+    const { data: { canReview } = {} } = useCanUserReviewQuery(roomId);
+    const [postReview, { error, isSuccess }] = usePostReviewMutation();
+    useEffect(() => {
+        if (error && 'data' in  error) toast.error(error?.data?.message || 'Unkow error');
+        if (isSuccess) {
+            toast.success('Review posted');
+            router.refresh();
+        }
+    }, [error, isSuccess]);
+
+    const handleSubmit = () => {
+        const reviewData = {
+            rating: review.rating,
+            comment: review.comment,
+            roomId
+        };
+        postReview(reviewData);
+    };
+
     return (
         <>
+            {canReview && (
             <button
                 type="button"
                 className="btn form-btn mt-4 mb-5"
@@ -11,6 +38,7 @@ const Review = () => {
             >
                 Submit Your Review
             </button>
+            )}
             <div
                 className="modal fade"
                 id="ratingModal"
@@ -33,11 +61,24 @@ const Review = () => {
                             ></button>
                         </div>
                         <div className="modal-body">
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-                                consectetur, mi nec tristique vehicula, elit tellus vulputate
-                                ex, nec bibendum libero elit at orci.
-                            </p>
+                            <StarRatings
+                                rating={review.rating}
+                                starRatedColor="#e61e4d"
+                                numberOfStars={5}
+                                name="rating"
+                                changeRating={(e: number) => setReview(prev => ({ ...prev, rating: e }))}
+                            />
+                            <div className="form-floating">
+                                <textarea
+                                    id="review_field"
+                                    className="form-control mt-4"
+                                    placeholder="Leave your review"
+                                    style={{ height: "100px" }}
+                                    value={review.comment}
+                                    onChange={(e) => setReview(prev => ({ ...prev, comment: e.target.value }))}
+                                ></textarea>
+                                <label htmlFor="review_field">Comment</label>
+                            </div>
                         </div>
                         <div className="modal-footer">
                             <button
@@ -45,6 +86,7 @@ const Review = () => {
                                 className="btn my-3 form-btn w-100"
                                 data-bs-dismiss="modal"
                                 aria-label="Close"
+                                onClick={handleSubmit}
                             >
                                 Submit
                             </button>

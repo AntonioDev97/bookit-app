@@ -27,6 +27,17 @@ export const BookingAPI = createApi({
                 }
             }
         }),
+        getSalesStats: builder.query({
+            query({ startDate, endDate }) {
+                return {
+                    url: '/bookings/salesStats',
+                    params: {
+                        startDate,
+                        endDate
+                    }
+                }
+            }
+        }),
         stripeCheckout: builder.query({
             query({ id, checkIn, checkOut, daysOfStay, amount }) {
                 return {
@@ -47,5 +58,6 @@ export const {
     useNewBookingMutation,
     useLazyAvailabilityQuery,
     useRoomBookedDaysQuery,
-    useLazyStripeCheckoutQuery
+    useLazyStripeCheckoutQuery,
+    useLazyGetSalesStatsQuery
 } = BookingAPI;

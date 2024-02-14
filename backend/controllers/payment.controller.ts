@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import Room from "../models/room.model";
+import User from "../models/user.model";
+import Booking from "../models/booking.model";
+import { headers } from "next/headers";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Generate stripe checkout session => /api/payment/checkout_session/:roomId
 export const stripeCheckoutSession = async (request: NextRequest, { params }: { params: { id: string } }) => {
-    const { 
+    const {
         daysOfStay,
         checkIn,
         checkOut,
         amount
     } = Object.fromEntries(new URL(request.url).searchParams);
-    
+
     const room = await Room.findById(params.id);
 
     const session = await stripe.checkout.sessions.create({
@@ -25,7 +28,7 @@ export const stripeCheckoutSession = async (request: NextRequest, { params }: { 
         line_items: [
             {
                 price_data: {
-                    currency: 'mxn',
+                    currency: 'usd',
                     unit_amount: Number(amount) * 100,
                     product_data: {
                         name: room?.name,
@@ -39,4 +42,43 @@ export const stripeCheckoutSession = async (request: NextRequest, { params }: { 
     });
 
     return NextResponse.json({ success: true, session });
+};
+
+// Create new booking after payment => /api/payment/webhook
+export const webhookCheckout = async (request: NextRequest) => {
+    const rawBody = await request.text();
+    const signature = headers().get("Stripe-Signature");
+
+    const event = stripe.webhooks.constructEvent(
+        rawBody,
+        signature,
+        process.env.STRIPE_SECRET_WEBHOOK
+    );
+
+    if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+        const room = session.client_reference_id;
+        const user = (await User.findOne({ email: session?.customer_email }))._id;
+
+        const paymentInfo = {
+            id: session.payment_intent,
+            status: session.payment_status,
+            amountPaid: session.amount_total / 100,
+            paidAt: Date.now(),
+        };
+
+        const checkIn = session.metadata.checkIn;
+        const checkOut = session.metadata.checkOut;
+        const daysOfStay = session.metadata.daysOfStay;
+
+        await Booking.create({
+            room,
+            user,
+            checkIn,
+            checkOut,
+            daysOfStay,
+            paymentInfo
+        });
+    }
+    return NextResponse.json({ success: true });
 };

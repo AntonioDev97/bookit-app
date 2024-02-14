@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { IRoom } from '@/backend/models/room.model';
 import React, { useEffect } from 'react';
@@ -72,9 +72,8 @@ const RoomDetails = ({ data }: IProps) => {
                     }
                 </div>
             </div>
-
-            <Review />
-            <ListReviews />
+            <Review roomId={data?._id} />
+            <ListReviews reviews={data?.reviews} />
         </div>
 
     );
