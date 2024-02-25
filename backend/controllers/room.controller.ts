@@ -28,6 +28,7 @@ export const getAllRooms = async (request: NextRequest) => {
 
 export const createRoom = async (request: NextRequest) => {
     const body = await request.json();
+    body.user = request.user._id;
     const room = await Room.create(body);
     return NextResponse.json({
         success: true,
@@ -117,4 +118,16 @@ export const deleteRoom = async (request: NextRequest, { params }: { params: { i
         success: true,
         data: room
     }, { status: 200 });
+};
+
+// Get all rooms - ADMIN => /api/admin/rooms
+export const getAllAdminRooms = async (request: NextRequest) => {
+    const rooms = await Room.find();
+
+    return NextResponse.json({
+        success: true,
+        data: {
+            rooms
+        }
+    });
 };

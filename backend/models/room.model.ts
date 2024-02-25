@@ -166,7 +166,7 @@ const roomSchema: Schema<IRoom> = new Schema({
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: false
+        required: true
     }
 },
 {
