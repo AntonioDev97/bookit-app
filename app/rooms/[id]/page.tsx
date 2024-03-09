@@ -9,7 +9,7 @@ interface IProps {
 
 async function getRoom(id: string) {
   return await (await fetch(`${API_URL}/api/rooms/${id}`, {
-    cache: "no-cache",
+    next: { tags: ['RoomDetails'] }
   })).json();
 }
 
