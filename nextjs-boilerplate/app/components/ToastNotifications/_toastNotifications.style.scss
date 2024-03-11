@@ -1,0 +1,13 @@
+#toast-notifications-containter {
+    position: fixed;
+    z-index: 9999;
+    bottom: 2rem;
+    right: 0.5em;
+    text-align: left;
+    width: fit-content;
+
+    .toast-notification {
+        width: fit-content;
+        margin-top: 0.5rem;
+    }
+}

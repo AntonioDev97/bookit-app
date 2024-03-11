@@ -1,0 +1,176 @@
+{
+    "home": {
+        "prefix": "App",
+        "title": "NextJS Boilerplate",
+        "hrefLink": "/",
+        "targetLink": "app",
+        "roles": ["public"]
+    },
+    "menuItems": [{
+        "name": "Home",
+        "hrefLink": "/",
+        "icon": "Home",
+        "access": "general",
+        "subItems": [],
+        "roles": ["public"],
+        "targetLink": "app"
+    }, {
+        "name": "Get Started",
+        "hrefLink": "/get-started",
+        "icon": "Rocket",
+        "access": "general",
+        "subItems": [],
+        "roles": ["public"],
+        "targetLink": "app"
+    }, {
+        "name": "Projects",
+        "hrefLink": "/projects",
+        "access": "general",
+        "icon": "secretWatsonKnowledgeCatalog",
+        "subItems": [],
+        "roles": ["user"],
+        "targetLink": "app"
+    }, {
+        "name": "Patterns",
+        "hrefLink": "/patterns",
+        "access": "general",
+        "icon": "secretWatsonKnowledgeCatalog",
+        "subItems": [],
+        "roles": ["user"],
+        "targetLink": "app"
+    }, {
+        "name": "MenuItem",
+        "hrefLink": "/menusub",
+        "access": "general",
+        "icon": "secretWatsonKnowledgeCatalog",
+        "subItems": [{
+            "name": "MenuSubItem",
+            "hrefLink": "/menusubitem",
+            "access": "general",
+            "icon": "secretWatsonKnowledgeCatalog",
+            "subItems": [],
+            "roles": ["public"],
+            "targetLink": "app"
+        }, {
+            "name": "Link",
+            "hrefLink": "/menusubitem",
+            "access": "general",
+            "icon": "secretWatsonKnowledgeCatalog",
+            "subItems": [],
+            "roles": ["public"],
+            "targetLink": "app"
+        }],
+        "roles": ["public"],
+        "targetLink": "app"
+    }, {
+        "name": "Resources",
+        "hrefLink": "/resources",
+        "icon": "Launch",
+        "access": "general",
+        "subItems": [],
+        "roles": ["public"],
+        "targetLink": "app"
+    }],
+    "menuUpperLinks": [{
+        "name": "Link 1",
+        "hrefLink": "https://secret.com",
+        "access": "general",
+        "icon": "Launch",
+        "subItems": [],
+        "roles": ["public"],
+        "targetLink": "_blank"
+    },{
+        "name": "Link 2",
+        "hrefLink": "https://secret.com",
+        "access": "general",
+        "icon": "Launch",
+        "subItems": [],
+        "roles": ["public"],
+        "targetLink": "_blank"
+    }, {
+        "name": "Link 3",
+        "hrefLink": "https://secret.com",
+        "access": "general",
+        "icon": "Launch",
+        "subItems": [],
+        "roles": ["user"],
+        "targetLink": "_blank"
+    }, {
+        "name": "Link 4",
+        "hrefLink": "https://secret.com",
+        "access": "general",
+        "icon": "Launch",
+        "subItems": [{
+            "name": "SubLink 1",
+            "hrefLink": "https://secret.com",
+            "access": "general",
+            "icon": "Launch",
+            "roles": ["user"],
+            "targetLink": "_blank"
+        }, {
+            "name": "SubLink 2",
+            "hrefLink": "https://secret.com",
+            "access": "general",
+            "icon": "Launch",
+            "roles": ["public"],
+            "targetLink": "_blank"
+        }],
+        "roles": ["public"],
+        "targetLink": "_blank"
+    }, {
+        "name": "Link 5",
+        "hrefLink": "https://secret.com",
+        "access": "general",
+        "icon": "Launch",
+        "subItems": [],
+        "roles": ["admin"],
+        "targetLink": "_blank"
+    }],
+    "footerItems": [{
+        "name": "Contact Us",
+        "hrefLink": "https://secret.com",
+        "access": "general",
+        "icon": "Launch",
+       "roles": ["public"],
+        "targetLink": "_blank"
+    }, {
+        "name": "Business Conduct Guidelines",
+        "hrefLink": "https://secret.com",
+        "access": "general",
+        "icon": "Launch",
+       "roles": ["public"],
+        "targetLink": "_blank"
+    }, {
+        "name": "F.A.Q.",
+        "hrefLink": "https://secret.com",
+        "access": "general",
+        "icon": "Launch",
+       "roles": ["public"],
+        "targetLink": "_blank"
+    }, {
+        "name": "Privacy Policy",
+        "hrefLink": "https://secret.com",
+        "access": "general",
+        "icon": "Launch",
+       "roles": ["public"],
+        "targetLink": "_blank"
+    }, {
+        "name": "Private Link",
+        "hrefLink": "https://secret.com",
+        "access": "general",
+        "icon": "Launch",
+       "roles": ["user"],
+        "targetLink": "_blank"
+    }],
+    "tableHeaders": {
+        "projects": [
+            { "key": "name", "header": "Name" },
+            { "key": "gitOrganizationName", "header": "Organization" },
+            { "key": "languagesString", "header": "Languages" },
+            { "key": "totalContributors", "header": "Contributors" },
+            { "key": "openIssues", "header": "Open Issues" },
+            { "key": "openPullRequests", "header": "Open Pull Requests" },
+            { "key": "lastCommitLocalDate", "header": "Last Commit" }
+        ]
+    }
+}

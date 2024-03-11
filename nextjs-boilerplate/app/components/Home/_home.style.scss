@@ -1,0 +1,15 @@
+#home {
+    .home-header {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+    }
+    .home-cards {
+        margin-top: 4rem;
+    }
+}

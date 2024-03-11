@@ -1,0 +1,21 @@
+apiVersion: automation.cio/v1alpha1
+kind: RepositoryConfig
+notifications:
+  slackChannel: channel-xxxxxxxxx
+ealImapNumber: XXX-XXXXXXX
+build:
+  strategy: container-release
+  pipeline: nodejs-v18-npm-container-image
+  version: v2
+  config:
+    cirrus-pipeline-name: xxxxxxxxxx
+    service-port: '8080'
+    cirrus-project-name: xxxxxxxxxx
+    cirrus-api-username: xxxxxxxxxxxxxxxxxxxxxx
+    cirrus-api-password: xxxxxxxxxxxxxxxxxxxxxx
+    cirrus-region: <us-south2 | us-east1 | ash-cpc>*
+release:
+  environments:
+    - name: pre-production
+    - name: production
+    - name: test
