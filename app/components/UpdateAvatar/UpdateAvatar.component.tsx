@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import ButtonLoader from "../ButtonLoader";
+import Image from "next/image";
 
 const UpdateAvatar = () => {
     const dispatch = useAppDispatch();
@@ -15,7 +16,10 @@ const UpdateAvatar = () => {
 
     const [updateSession, { data }] = useLazyUpdateSessionQuery();
 
-    useEffect(() => { if (data) dispatch(setUser(data?.user)); }, [data]);
+    useEffect(() => {
+        if (data) dispatch(setUser(data?.user));
+    // eslint-disable-next-line
+    }, [data]);
 
     const [avatar, setAvatar] = useState("");
     const [avatarPreview, setAvatarPreview] = useState("/images/default_avatar.jpg");
@@ -31,6 +35,7 @@ const UpdateAvatar = () => {
             updateSession();
             toast.success('Avatar updated successfully');
         }
+    // eslint-disable-next-line
     }, [user, error, isSuccess]);
 
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
@@ -60,7 +65,7 @@ const UpdateAvatar = () => {
                         <div className="d-flex align-items-center">
                             <div className="me-3">
                                 <figure className="avatar item-rtl">
-                                    <img
+                                    <Image
                                         src={avatarPreview}
                                         className="rounded-circle"
                                         alt="image"

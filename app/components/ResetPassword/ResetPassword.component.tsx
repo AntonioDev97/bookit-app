@@ -25,6 +25,7 @@ const ResetPassword = ({ token }: Props) => {
             toast.success("Password has been reseted successful");
             router.push("/login");
         }
+    // eslint-disable-next-line
     }, [error, isSuccess]);
 
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {

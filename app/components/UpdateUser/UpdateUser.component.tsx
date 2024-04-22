@@ -22,6 +22,7 @@ const UpdateUser = () => {
 
     useEffect(() => {
         if (data) dispatch(setUser(data?.user));
+    // eslint-disable-next-line
     }, [data]);
 
     useEffect(() => {
@@ -33,6 +34,7 @@ const UpdateUser = () => {
             toast.success("User updated successfully!.");
             router.refresh();
         }
+    // eslint-disable-next-line
     }, [currentUser, error, isSuccess]);
 
     const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {

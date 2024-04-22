@@ -33,13 +33,30 @@ export const RoomAPI = createApi({
             },
         }),
         updateRoom: builder.mutation({
-            query({id, body}) {
+            query({ id, body }) {
                 return {
                     url: `/admin/rooms/${id}`,
                     method: "PUT",
                     body,
                 };
             },
+        }),
+        getRoomReviews: builder.query({
+            query(id) {
+                return {
+                    url: `admin/rooms/reviews?roomId=${id}`,
+                };
+            },
+            providesTags: ['Reviews' as any],
+        }),
+        deleteReview: builder.mutation({
+            query({ id, roomId }) {
+                return {
+                    url: `/admin/rooms/reviews/?id=${id}&roomId=${roomId}`,
+                    method: "DELETE",
+                };
+            },
+            invalidatesTags: ['Reviews' as any],
         }),
     })
 });
@@ -48,5 +65,7 @@ export const {
     usePostReviewMutation,
     useCanUserReviewQuery,
     useNewRoomMutation,
-    useUpdateRoomMutation
+    useUpdateRoomMutation,
+    useLazyGetRoomReviewsQuery,
+    useDeleteReviewMutation
 } = RoomAPI;

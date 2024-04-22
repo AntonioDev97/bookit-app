@@ -29,6 +29,7 @@ const RoomDetails = ({ data }: IProps) => {
 
             new MapLibreGL.Marker().setLngLat(data?.location?.coordinates as [1, 1]).addTo(map);
         }
+    // eslint-disable-next-line
     }, []);
 
     return (

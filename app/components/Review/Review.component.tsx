@@ -16,6 +16,7 @@ const Review = ({ roomId }: { roomId: string }) => {
             toast.success('Review posted');
             router.refresh();
         }
+    // eslint-disable-next-line
     }, [error, isSuccess]);
 
     const handleSubmit = () => {

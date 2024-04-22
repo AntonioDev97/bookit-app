@@ -1,4 +1,6 @@
+'use client'
 import { IBooking } from '@/backend/models/booking.model';
+import { useAppSelector } from '@/redux/hooks';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
@@ -9,6 +11,9 @@ interface Props {
 
 const BookingDetails = ({ booking }: Props) => {
     const isPaid = booking?.paymentInfo?.status?.toLocaleLowerCase() === "paid";
+    const { user } = useAppSelector((state) => state.user);
+    console.log('user', user);
+    
 
     return (
         <div className="container">
@@ -75,12 +80,23 @@ const BookingDetails = ({ booking }: Props) => {
                                     </b>
                                 </td>
                             </tr>
+                            {user?.role === 'admin' &&
+                            <tr>
+                                <th scope="row">Stripe ID:</th>
+                                <td>
+                                    <b className='redColor'>
+                                        {booking?.paymentInfo?.id}
+                                    </b>
+                                </td>
+                            </tr>
+                            }
                         </tbody>
                     </table>
 
                     <h4 className="mt-5 mb-4">Booked Room:</h4>
 
                     <hr />
+                    {booking?.room ?
                     <div className="cart-item my-1">
                         <div className="row my-5">
                             <div className="col-4 col-lg-2">
@@ -105,6 +121,9 @@ const BookingDetails = ({ booking }: Props) => {
                             </div>
                         </div>
                     </div>
+                        :
+                        <div className="alert alert-danger">Room not loonger exist</div>
+                    }
                     <hr />
                 </div>
             </div>

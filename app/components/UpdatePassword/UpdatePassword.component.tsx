@@ -18,6 +18,7 @@ const UpdatePassword = () => {
       toast.success("Password updated!");
       router.refresh();
     }
+  // eslint-disable-next-line
   }, [error, isSuccess]);
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {

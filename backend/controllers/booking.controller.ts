@@ -35,8 +35,8 @@ export const newBooking = async (request: NextRequest) => {
 };
 
 export const checkAvailability = async (request: NextRequest) => {
-    const { 
-        roomId, 
+    const {
+        roomId,
         checkIn,
         checkOut
     } = Object.fromEntries(new URL(request.url).searchParams);
@@ -46,7 +46,7 @@ export const checkAvailability = async (request: NextRequest) => {
         checkIn: { $lte: new Date(checkOut) },
         checkOut: { $gte: new Date(checkIn) }
     });
-    
+
     const isAvailable: boolean = bookings.length === 0;
 
     return NextResponse.json({
@@ -59,8 +59,8 @@ export const getRoomBookings = async (request: NextRequest) => {
     const { roomId } = Object.fromEntries(new URL(request.url).searchParams);
 
     const bookings: IBooking[] = await Booking.find({ room: roomId });
-    
-    const dates: Date[] = bookings.flatMap(booking => 
+
+    const dates: Date[] = bookings.flatMap(booking =>
         Array.from(
             moment.range(moment(booking.checkIn), moment(booking.checkOut)).by('day')
         )
@@ -73,8 +73,8 @@ export const getRoomBookings = async (request: NextRequest) => {
 };
 
 export const getUserBookings = async (request: NextRequest) => {
-    const bookings: IBooking[] = await Booking.find({ user: request.user._id});
-    
+    const bookings: IBooking[] = await Booking.find({ user: request.user._id });
+
     return NextResponse.json({
         success: true,
         bookings
@@ -87,7 +87,7 @@ export const getBookingById = async (request: NextRequest, { params }: { params:
     if (booking && booking.user?._id?.toString() !== request.user._id) {
         throw new ErrorHandler('You cannot view this booking', 403);
     }
-    
+
     return NextResponse.json({
         success: true,
         booking
@@ -205,5 +205,29 @@ export const getSalesStats = async (req: NextRequest) => {
         totalSales,
         sixMonthSalesData,
         topRooms
+    });
+};
+
+// Get admin bookings   =>  /api/admin/bookings
+export const allAdminBookings = async (req: NextRequest) => {
+    const bookings = await Booking.find();
+
+    return NextResponse.json({
+        bookings,
+    });
+};
+
+// Delete booking   =>  /api/admin/bookings/:id
+export const deleteBooking = async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const booking = await Booking.findById(params.id);
+
+    if (!booking) {
+        throw new ErrorHandler("Booking not found with this ID", 404);
+    }
+
+    await booking?.deleteOne();
+
+    return NextResponse.json({
+        success: true,
     });
 };

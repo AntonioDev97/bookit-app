@@ -8,7 +8,7 @@ export const getAllRooms = async (request: NextRequest) => {
     const resPerPage: number = 4;
 
     const { searchParams } = new URL(request.url);
-    const queryStr:any = {};
+    const queryStr: any = {};
     searchParams.forEach((value, key) => queryStr[key] = value);
 
     const totalRooms: number = await Room.countDocuments();
@@ -21,7 +21,7 @@ export const getAllRooms = async (request: NextRequest) => {
             pagination: { page: Number(searchParams.get('page') || 1), limit: resPerPage },
             total: totalRooms,
             count: rooms.length,
-            rooms,    
+            rooms,
         }
     });
 };
@@ -70,7 +70,7 @@ export const postRoomReview = async (request: NextRequest) => {
 
     const room = await Room.findById(roomId);
     if (!room) throw new ErrorHandler('Room not found', 404);
-    
+
     const isReviewed = room?.reviews.some((review: IRReview) => review.user?.toString() === request.user._id?.toString());
     if (isReviewed) {
         room?.reviews?.forEach((review: IRReview) => {
@@ -78,7 +78,7 @@ export const postRoomReview = async (request: NextRequest) => {
                 review.comment = comment;
                 review.rating = reviewInit.rating;
             }
-        }); 
+        });
     } else {
         room.reviews.push(reviewInit);
         room.numReviews = room.reviews.length;
@@ -129,5 +129,38 @@ export const getAllAdminRooms = async (request: NextRequest) => {
         data: {
             rooms
         }
+    });
+};
+
+// Get room reviews - ADMIN  =>  /api/admin/rooms/reviews
+export const getRoomReviews = async (req: NextRequest) => {
+    const { searchParams } = new URL(req.url);
+
+    const room = await Room.findById(searchParams.get("roomId"));
+
+    return NextResponse.json({
+        success: true,
+        reviews: room.reviews
+    });
+};
+
+// Delete room review - ADMIN  =>  /api/admin/rooms/reviews
+export const deleteRoomReview = async (req: NextRequest) => {
+    const { searchParams } = new URL(req.url);
+
+    const roomId = searchParams.get("roomId");
+    const reviewId = searchParams.get("id");
+
+    const room = await Room.findById(roomId);
+
+    const reviews = room.reviews.filter((review: IRReview) => review?._id.toString() !== reviewId);
+    const numReviews = reviews.length;
+
+    const ratings = numReviews === 0 ? 0 : room?.reviews?.reduce((acc: number, item: { rating: number }) => item.rating + acc, 0) / numReviews;
+
+    await Room.findByIdAndUpdate(roomId, { reviews, numReviews, ratings });
+
+    return NextResponse.json({
+        success: true
     });
 };

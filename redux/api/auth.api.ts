@@ -23,8 +23,8 @@ export const AuthAPI = createApi({
             }
         }),
         updateSession: builder.query({
-            query() { 
-                return { url: '/auth/session?update' } 
+            query() {
+                return { url: '/auth/session?update' }
             }
         }),
         updatePassword: builder.mutation({
@@ -63,6 +63,23 @@ export const AuthAPI = createApi({
                 }
             }
         }),
+        updateUserFromAdmin: builder.mutation({
+            query({ id, body }) {
+                return {
+                    url: `/admin/users/${id}`,
+                    method: "PUT",
+                    body,
+                };
+            },
+        }),
+        deleteUser: builder.mutation({
+            query(id) {
+                return {
+                    url: `/admin/users/${id}`,
+                    method: "DELETE",
+                };
+            },
+        }),
     })
 });
 
@@ -73,5 +90,7 @@ export const {
     useUpdatePasswordMutation,
     useUpdateAvatarMutation,
     useRecoverPasswordMutation,
-    useResetPasswordMutation
+    useResetPasswordMutation,
+    useUpdateUserFromAdminMutation,
+    useDeleteUserMutation
 } = AuthAPI;

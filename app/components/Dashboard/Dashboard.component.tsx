@@ -22,6 +22,7 @@ const Dashboard = () => {
                 endDate: dashboard.endDate.toISOString(),
             });
         }
+    // eslint-disable-next-line
     }, [error]);
 
     const submitHandler = () => {

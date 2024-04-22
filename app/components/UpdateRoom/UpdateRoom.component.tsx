@@ -53,6 +53,7 @@ const UpdateRoom = ({ room }: Props) => {
             router.refresh();
             toast.success("Room Updated");
         }
+    // eslint-disable-next-line
     }, [error, isSuccess]);
 
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
@@ -222,7 +223,7 @@ const UpdateRoom = ({ room }: Props) => {
                     <label className="mb-3">Room Features</label>
 
                     {roomFeatures?.map((feature) => (
-                        <div className="form-check">
+                        <div className="form-check" key={feature.name}>
                             <input
                                 className="form-check-input"
                                 type="checkbox"

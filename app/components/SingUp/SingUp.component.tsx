@@ -20,6 +20,7 @@ const SingUp = () => {
             router.push("/login");
             toast.success("Account Registered. You can login now");
         }
+    // eslint-disable-next-line
     }, [error, isSuccess]);
 
     const submitHandler = (e: FormEvent<HTMLFormElement>) => {

@@ -21,6 +21,7 @@ const Header = () => {
       dispatch(setUser(data.user));
       if(data.user) dispatch(setIsAuth(true));
     }
+  // eslint-disable-next-line
   }, [data]);
 
   const logoutHandler = () => {
