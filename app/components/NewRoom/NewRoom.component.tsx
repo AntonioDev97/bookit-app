@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import ButtonLoader from "../ButtonLoader";
-import { IRoom } from "@/backend/models/room.model";
 
 const NewRoom = () => {
     const [roomDetails, setRoomDetails] = useState({
@@ -48,6 +47,7 @@ const NewRoom = () => {
             router.push("/admin/rooms");
             toast.success("Room created");
         }
+    // eslint-disable-next-line
     }, [error, isSuccess]);
 
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
@@ -217,7 +217,7 @@ const NewRoom = () => {
                     <label className="mb-3">Room Features</label>
 
                     {roomFeatures?.map((feature) => (
-                        <div className="form-check">
+                        <div className="form-check" key={feature.name}>
                             <input
                                 className="form-check-input"
                                 type="checkbox"

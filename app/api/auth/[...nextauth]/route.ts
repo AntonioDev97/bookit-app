@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import NextAuth from "next-auth/next";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from 'bcryptjs';
+import { NextRequest } from "next/server";
 
 type Credential = {
     email: string,
@@ -13,7 +14,7 @@ type Token = {
     user: IUser
 }
 
-async function auth(request: NextApiRequest, response: NextApiResponse) {
+async function auth(request: NextApiRequest & NextRequest, response: NextApiResponse) {
     return await NextAuth(request, response, {
         session: {
             strategy: 'jwt'

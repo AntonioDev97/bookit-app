@@ -5,6 +5,7 @@ import { IBooking } from '@/backend/models/booking.model';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import './_invoice.style.css';
+import Image from 'next/image';
 
 interface Props {
     booking: IBooking;
@@ -35,7 +36,7 @@ const Invoice = ({ booking }: Props) => {
                 <div id="booking_invoice" className="px-4 border border-secondary">
                     <div className="clearfix">
                         <div id="logo" className="my-4">
-                            <img alt='bookit logo' src={"/images/bookit_logo.png"} />
+                            <Image alt='bookit logo' src={"/images/bookit_logo.png"} />
                         </div>
                         <h1>INVOICE # {booking?._id}</h1>
                         <div id="company" className="clearfix">

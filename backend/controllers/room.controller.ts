@@ -174,3 +174,36 @@ export const getAllAdminRooms = async (request: NextRequest) => {
         }
     });
 };
+
+// Get room reviews - ADMIN  =>  /api/admin/rooms/reviews
+export const getRoomReviews = async (req: NextRequest) => {
+    const { searchParams } = new URL(req.url);
+
+    const room = await Room.findById(searchParams.get("roomId"));
+
+    return NextResponse.json({
+        success: true,
+        reviews: room.reviews
+    });
+};
+
+// Delete room review - ADMIN  =>  /api/admin/rooms/reviews
+export const deleteRoomReview = async (req: NextRequest) => {
+    const { searchParams } = new URL(req.url);
+
+    const roomId = searchParams.get("roomId");
+    const reviewId = searchParams.get("id");
+
+    const room = await Room.findById(roomId);
+
+    const reviews = room.reviews.filter((review: IRReview) => review?._id.toString() !== reviewId);
+    const numReviews = reviews.length;
+
+    const ratings = numReviews === 0 ? 0 : room?.reviews?.reduce((acc: number, item: { rating: number }) => item.rating + acc, 0) / numReviews;
+
+    await Room.findByIdAndUpdate(roomId, { reviews, numReviews, ratings });
+
+    return NextResponse.json({
+        success: true
+    });
+};

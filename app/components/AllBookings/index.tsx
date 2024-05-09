@@ -1,1 +1,1 @@
-export { default } from './AllBokings.component';
+export { default } from './AllBookings.component';

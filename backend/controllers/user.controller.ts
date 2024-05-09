@@ -12,7 +12,7 @@ export const registerUser = async (request: NextRequest) => {
     const { name, email, password } = body;
 
     const user = await User.create({ name, email, password });
-    
+
     return NextResponse.json({
         success: true,
         message: 'User created successfully!',
@@ -27,7 +27,7 @@ export const updateUser = async (request: NextRequest) => {
     const userData = { name, email };
 
     const user = await User.findByIdAndUpdate(request.user._id, userData);
-    
+
     return NextResponse.json({
         success: true,
         message: 'User created successfully!',
@@ -39,7 +39,7 @@ export const updateUser = async (request: NextRequest) => {
 export const updatePassword = async (request: NextRequest) => {
     const body = await request.json();
     const user = await User.findById(request?.user?._id).select('+password');
-    
+
     const isMatched = await user.comparePassword(body.oldPassword);
     if (!isMatched) throw new ErrorHandler('Old password is incorrect', 400);
 
@@ -68,7 +68,7 @@ export const recoverPassword = async (request: NextRequest) => {
         });
     } catch (error: any) {
         user.resetPassword = undefined;
-        user.resetPasswordExpire= undefined;
+        user.resetPasswordExpire = undefined;
         await user.save();
         throw new ErrorHandler(error?.message || 'Email not sent', error?.code || 500)
     }
@@ -77,7 +77,7 @@ export const recoverPassword = async (request: NextRequest) => {
 };
 
 // Recover password reset => /api/users/me/password/recover/:token
-export const recoverResetPassword = async (request: NextRequest, { params } : { params: { token: string } }) => {
+export const recoverResetPassword = async (request: NextRequest, { params }: { params: { token: string } }) => {
     const body = await request.json();
 
     // Hash the token
@@ -92,7 +92,7 @@ export const recoverResetPassword = async (request: NextRequest, { params } : { 
     user.password = body.password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
- 
+
     await user.save();
 
     return NextResponse.json({ success: true });
@@ -110,4 +110,59 @@ export const updateAvatar = async (request: NextRequest) => {
     const user = await User.findByIdAndUpdate(request.user._id, { avatar });
 
     return NextResponse.json({ success: true, user });
+};
+
+// Get all users  =>  /api/admin/users
+export const allAdminUsers = async (req: NextRequest) => {
+    const users = await User.find();
+
+    return NextResponse.json({
+        success: true,
+        users
+    });
+};
+
+// Get user details  =>  /api/admin/users/:id
+export const getUserDetails = async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const user = await User.findById(params.id);
+
+    if (!user) throw new ErrorHandler("User not found with this ID", 404);
+
+    return NextResponse.json({
+        success: true,
+        user
+    });
+};
+
+// Update user details  =>  /api/admin/users/:id
+export const updateUserFromAdmin = async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const body = await req.json();
+
+    const newUserData = {
+        name: body.name,
+        email: body.email,
+        role: body.role,
+    };
+
+    const user = await User.findByIdAndUpdate(params.id, newUserData);
+
+    return NextResponse.json({
+        success: true,
+        user
+    });
+};
+
+// Delete user  =>  /api/admin/users/:id
+export const deleteUser = async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const user = await User.findById(params.id);
+
+    if (!user) throw new ErrorHandler("User not found with this ID", 404);
+    // Remove avatar from cloudinary
+    if (user?.avatar?.public_id) await deleteFile(user?.avatar?.public_id);
+
+    await user.deleteOne();
+
+    return NextResponse.json({
+        success: true
+    });
 };

@@ -3,26 +3,23 @@ import Error from "@/app/error";
 import { getAuthHeader } from "@/helpers/authHeader.helper";
 
 export const metadata = {
-  title: "All Bookings - ADMIN",
+    title: "All Bookings - ADMIN",
 };
 
 const getBookings = async () => {
-  const authHeaders = getAuthHeader();
+    const authHeaders = getAuthHeader();
 
-  const res = await fetch(`${process.env.API_URL}/api/admin/bookings`, {
-    headers: authHeaders.headers,
-  });
-  return await res.json();
+    const res = await fetch(
+        `${process.env.API_URL}/api/admin/bookings`,
+        authHeaders
+    );
+    return res.json();
 };
 
-export default async function AdminRoomsPage() {
-  const data = await getBookings();
-  console.log(data);
-  
+export default async function AdminBookingsPage() {
+    const data = await getBookings();    
 
-  if (data?.message || data?.data?.message) {
-    return <Error error={data.data} />;
-  }
-  
-  return <AllBookings bookings={data?.bookings} />;
-}
+    if (data?.message) return <Error error={data} />;
+
+    return <AllBookings data={data} />;
+};

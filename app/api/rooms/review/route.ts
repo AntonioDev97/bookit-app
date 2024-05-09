@@ -1,5 +1,5 @@
 import { createEdgeRouter } from "next-connect";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { postRoomReview } from "@/backend/controllers/room.controller";
 import dbConnect from "@/backend/config/dbConnect";
 import { catchAsyncErrors } from "@/backend/middlewares/catchAsyncErrors";
@@ -13,5 +13,5 @@ dbConnect();
 router.use(isAuthUser).post(catchAsyncErrors(postRoomReview));
 
 export async function POST(request: NextRequest, ctx: RequestContext) {
-    return router.run(request, ctx)
+    return router.run(request, ctx) as Promise<NextResponse>;
 };

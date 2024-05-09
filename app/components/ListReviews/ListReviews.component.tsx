@@ -1,4 +1,5 @@
 import { IRReview } from "@/backend/models/room.model";
+import Image from "next/image";
 import React from "react";
 import StarRatings from "react-star-ratings";
 
@@ -15,7 +16,7 @@ const ListReviews = ({ reviews }: Props) => {
       <div className="review-card my-3" key={review._id}>
         <div className="row">
           <div className="col-3 col-lg-1">
-            <img
+            <Image
               src={review?.user?.avatar?.url || '/images/default_avatar.jpg'}
               alt={review?.user?.name}
               width={60}

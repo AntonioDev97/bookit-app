@@ -41,31 +41,22 @@ export const RoomAPI = createApi({
                 };
             },
         }),
-        uploadRoomImages: builder.mutation({
-            query({ id, body }) {
-                return {
-                    url: `/admin/rooms/${id}/images`,
-                    method: "PUT",
-                    body,
-                };
-            },
-        }),
-        deleteRoomImage: builder.mutation({
-            query({ id, body }) {
-                return {
-                    url: `/admin/rooms/${id}/images`,
-                    method: "DELETE",
-                    body,
-                };
-            },
-        }),
-        deleteRoom: builder.mutation({
+        getRoomReviews: builder.query({
             query(id) {
                 return {
-                    url: `/admin/rooms/${id}`,
+                    url: `admin/rooms/reviews?roomId=${id}`,
+                };
+            },
+            providesTags: ['Reviews' as any],
+        }),
+        deleteReview: builder.mutation({
+            query({ id, roomId }) {
+                return {
+                    url: `/admin/rooms/reviews/?id=${id}&roomId=${roomId}`,
                     method: "DELETE",
                 };
             },
+            invalidatesTags: ['Reviews' as any],
         }),
     })
 });
@@ -75,7 +66,6 @@ export const {
     useCanUserReviewQuery,
     useNewRoomMutation,
     useUpdateRoomMutation,
-    useUploadRoomImagesMutation,
-    useDeleteRoomImageMutation,
-    useDeleteRoomMutation
+    useLazyGetRoomReviewsQuery,
+    useDeleteReviewMutation
 } = RoomAPI;

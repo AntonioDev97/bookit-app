@@ -1,8 +1,8 @@
-import { IUser } from "@/interfaces/user.interface";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 import NextAuth from "next-auth/next";
 import { Provider } from "next-auth/providers/index";
+import { IUser } from "@/interfaces/user.interface";
 
 const {
     NEXTAUTH_SECRET,

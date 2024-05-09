@@ -1,5 +1,5 @@
 import { createEdgeRouter } from "next-connect";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/backend/config/dbConnect";
 import { catchAsyncErrors } from "@/backend/middlewares/catchAsyncErrors";
 import { stripeCheckoutSession } from "@/backend/controllers/payment.controller";
@@ -13,5 +13,5 @@ dbConnect();
 router.use(isAuthUser).get(catchAsyncErrors(stripeCheckoutSession));
 
 export async function GET(request: NextRequest, ctx: RequestContext) {
-    return router.run(request, ctx)
+    return router.run(request, ctx) as Promise<NextResponse>;
 };

@@ -2,7 +2,7 @@ import dbConnect from "@/backend/config/dbConnect";
 import { deleteRoom, updateRoom } from "@/backend/controllers/room.controller";
 import { authorizeRoles, isAuthUser } from "@/backend/middlewares/auth";
 import { createEdgeRouter } from "next-connect";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 interface RequestContext {
     params: {
@@ -17,9 +17,9 @@ router.use(isAuthUser, authorizeRoles('admin')).put(updateRoom);
 router.use(isAuthUser, authorizeRoles('admin')).delete(deleteRoom);
 
 export async function PUT(request: NextRequest, ctx: RequestContext) { 
-    return router.run(request, ctx);
+    return router.run(request, ctx) as Promise<NextResponse>;
 };
 
 export async function DELETE(request: NextRequest, ctx: RequestContext) { 
-    return router.run(request, ctx);
+    return router.run(request, ctx) as Promise<NextResponse>;
 }

@@ -209,10 +209,25 @@ export const getSalesStats = async (req: NextRequest) => {
 };
 
 // Get admin bookings   =>  /api/admin/bookings
-export const getAllAdminBookings = async (request: NextRequest) => {
-    const bookings = await Booking.find().populate('room user');
+export const allAdminBookings = async (req: NextRequest) => {
+    const bookings = await Booking.find();
 
     return NextResponse.json({
         bookings,
+    });
+};
+
+// Delete booking   =>  /api/admin/bookings/:id
+export const deleteBooking = async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const booking = await Booking.findById(params.id);
+
+    if (!booking) {
+        throw new ErrorHandler("Booking not found with this ID", 404);
+    }
+
+    await booking?.deleteOne();
+
+    return NextResponse.json({
+        success: true,
     });
 };

@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 import dbConnect from "@/backend/config/dbConnect";
 import { catchAsyncErrors } from "@/backend/middlewares/catchAsyncErrors";
 import { recoverResetPassword } from "@/backend/controllers/user.controller";
+import { NextResponse } from "next/server";
 
 interface RequestContext { };
 
@@ -12,5 +13,5 @@ dbConnect();
 router.put(catchAsyncErrors(recoverResetPassword));
 
 export async function PUT(request: NextRequest, ctx: RequestContext) {
-    return router.run(request, ctx)
+    return router.run(request, ctx) as Promise<NextResponse>;
 };
