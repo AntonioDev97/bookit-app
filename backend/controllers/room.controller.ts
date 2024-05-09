@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import Room, { IRReview, IRoom } from "../models/room.model";
+import Room, { IRImages, IRReview, IRoom } from "../models/room.model";
 import Booking from '../models/booking.model';
 import ErrorHandler from "../utils/errorHandler";
 import APIFilters from "../utils/apiFilters";
+import { deleteFile, uploadFile } from "../utils/cloudinary";
 
 export const getAllRooms = async (request: NextRequest) => {
     const resPerPage: number = 4;
 
     const { searchParams } = new URL(request.url);
-    const queryStr:any = {};
+    const queryStr: any = {};
     searchParams.forEach((value, key) => queryStr[key] = value);
 
     const totalRooms: number = await Room.countDocuments();
@@ -21,14 +22,14 @@ export const getAllRooms = async (request: NextRequest) => {
             pagination: { page: Number(searchParams.get('page') || 1), limit: resPerPage },
             total: totalRooms,
             count: rooms.length,
-            rooms,    
+            rooms,
         }
     });
 };
 
 export const createRoom = async (request: NextRequest) => {
     const body = await request.json();
-    body.user = request.user._id;
+    body.createdBy = request.user._id;
     const room = await Room.create(body);
     return NextResponse.json({
         success: true,
@@ -58,6 +59,45 @@ export const updateRoom = async (request: NextRequest, { params }: { params: { i
     }, { status: 200 });
 };
 
+// Upload room images  =>  /api/admin/rooms/:id/upload_images
+export const uploadRoomImages = async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const room = await Room.findById(params.id);
+    const body = await req.json();
+
+    if (!room) throw new ErrorHandler("Room not found", 404);
+
+    const uploader = async (image: string) => uploadFile(image, "bookit/rooms");
+    const urls = await Promise.all((body?.images).map(uploader));
+
+    room.images?.push(...urls);
+    await room.save();
+
+    return NextResponse.json({
+        success: true,
+        room,
+    });
+};
+
+// Delete room image  =>  /api/admin/rooms/:id/delete_image
+export const deleteRoomImage = async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const room = await Room.findById(params.id);
+    const body = await req.json();
+
+    if (!room) throw new ErrorHandler("Room not found", 404);
+    const isDeleted = await deleteFile(body?.imgId);
+
+    if (isDeleted) {
+        room.images = room?.images.filter((img: IRImages) => img.public_id !== body.imgId);
+    }
+
+    await room.save();
+
+    return NextResponse.json({
+        success: true,
+        room,
+    });
+};
+
 // Create/Update room review -> POST /api/rooms/review
 export const postRoomReview = async (request: NextRequest) => {
     const body = await request.json();
@@ -70,7 +110,7 @@ export const postRoomReview = async (request: NextRequest) => {
 
     const room = await Room.findById(roomId);
     if (!room) throw new ErrorHandler('Room not found', 404);
-    
+
     const isReviewed = room?.reviews.some((review: IRReview) => review.user?.toString() === request.user._id?.toString());
     if (isReviewed) {
         room?.reviews?.forEach((review: IRReview) => {
@@ -78,7 +118,7 @@ export const postRoomReview = async (request: NextRequest) => {
                 review.comment = comment;
                 review.rating = reviewInit.rating;
             }
-        }); 
+        });
     } else {
         room.reviews.push(reviewInit);
         room.numReviews = room.reviews.length;
@@ -111,7 +151,10 @@ export const deleteRoom = async (request: NextRequest, { params }: { params: { i
 
     if (!room) throw new ErrorHandler('Room not found', 404);
 
-    // TODO: delete images assiciated with this room.
+    // Delete images associated with the room
+    for (let i = 0; i < room.images?.length; i++) {
+        await deleteFile(room.images[i].public_id);
+    }
 
     room = await room.deleteOne();
     return NextResponse.json({

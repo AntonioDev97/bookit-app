@@ -21,14 +21,14 @@ export interface IBooking extends Document {
 
 const bookingSchema: Schema<IBooking> = new mongoose.Schema({
     room: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
-        ref: "Room",
+        ref: 'Room',
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
-        ref: "User",
+        ref: 'User',
     },
     checkIn: {
         type: Date,

@@ -33,11 +33,37 @@ export const RoomAPI = createApi({
             },
         }),
         updateRoom: builder.mutation({
-            query({id, body}) {
+            query({ id, body }) {
                 return {
                     url: `/admin/rooms/${id}`,
                     method: "PUT",
                     body,
+                };
+            },
+        }),
+        uploadRoomImages: builder.mutation({
+            query({ id, body }) {
+                return {
+                    url: `/admin/rooms/${id}/images`,
+                    method: "PUT",
+                    body,
+                };
+            },
+        }),
+        deleteRoomImage: builder.mutation({
+            query({ id, body }) {
+                return {
+                    url: `/admin/rooms/${id}/images`,
+                    method: "DELETE",
+                    body,
+                };
+            },
+        }),
+        deleteRoom: builder.mutation({
+            query(id) {
+                return {
+                    url: `/admin/rooms/${id}`,
+                    method: "DELETE",
                 };
             },
         }),
@@ -48,5 +74,8 @@ export const {
     usePostReviewMutation,
     useCanUserReviewQuery,
     useNewRoomMutation,
-    useUpdateRoomMutation
+    useUpdateRoomMutation,
+    useUploadRoomImagesMutation,
+    useDeleteRoomImageMutation,
+    useDeleteRoomMutation
 } = RoomAPI;
